@@ -2,7 +2,10 @@ package core
 
 import (
 	"fmt"
+	fileadapter "github.com/casbin/casbin/persist/file-adapter"
+	"github.com/fifpoet/footprint/api"
 	"github.com/fifpoet/footprint/global"
+	"github.com/fifpoet/footprint/middleware"
 	"net/http"
 	"time"
 
@@ -22,6 +25,7 @@ func RunServer() {
 	r.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
+	InitRoutes(r)
 	address := fmt.Sprintf(":%d", global.FP_CONFIG.App.Port)
 	s := initServer(address, r)
 
@@ -47,4 +51,22 @@ func initServer(address string, router *gin.Engine) server {
 	s.MaxHeaderBytes = 1 << 20
 
 	return s
+}
+
+func InitRoutes(router *gin.Engine) {
+	f := &fileadapter.Adapter{}
+
+	router.POST("/login", api.Login)
+	//为路由组添加log和panic恢复的中间件
+	authorized := router.Group("/")
+	authorized.Use(gin.Logger())
+	authorized.Use(gin.Recovery())
+	authorized.Use(middleware.TokenAuthMiddleware())
+	{
+		authorized.POST("/api/todo", middleware.Authorize("resource", "write", f), api.Logout)
+		authorized.GET("/api/todo", middleware.Authorize("resource", "read", f), api.Logout)
+		authorized.POST("/logout", api.Logout)
+		authorized.POST("/refresh", api.Refresh)
+	}
+
 }

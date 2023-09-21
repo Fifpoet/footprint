@@ -10,17 +10,17 @@ import (
 
 // Login 读取user校验 签发token
 func Login(c *gin.Context) {
-	user := &model.UserInfo{}
+	user := &model.LoginReq{}
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 40000,
-			"msg":  "invalid param",
+			"msg":  "invalid param: " + err.Error(),
 		})
 		return
 	}
 	// TODO 读取db校验密码
-	dbUser, err := dao.UserRepo{}.FindById(user.Model.ID)
+	dbUser, err := dao.UserRepo{}.FindById(1)
 	if &dbUser == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"code": 40008,
@@ -28,7 +28,7 @@ func Login(c *gin.Context) {
 		})
 		return
 	}
-	if dbUser.Password != user.Password || dbUser.Name != user.Name {
+	if dbUser.Password != user.Password || dbUser.Name != user.UserName {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"code": 40003,
 			"msg":  "name or password error",
@@ -36,7 +36,7 @@ func Login(c *gin.Context) {
 		return
 	}
 	// 双token
-	access, refresh, _ := jwt.GenerateToken(*user)
+	access, refresh, _ := jwt.GenerateToken(dbUser)
 	c.JSON(http.StatusOK, gin.H{
 		"code":          20000,
 		"msg":           "success",
