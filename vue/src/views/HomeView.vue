@@ -20,10 +20,10 @@
               <span>系统首页</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="/element">
+          <el-menu-item index="/detail">
             <template slot="title">
               <i class="el-icon-setting"></i>
-              <span>element</span>
+              <span>详情</span>
             </template>
           </el-menu-item>
           <el-menu-item index="/login">
@@ -65,8 +65,8 @@
       <!-- 主体 -->
       <el-container>
         <!-- 头部区域 -->
-        <el-header style="background-color: #eee;">
-          <div style="display: flex; justify-content: flex-end;">
+        <el-header style="height: 60px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); text-align: right;">
+          <div style="height: 60px; display: flex; justify-content: flex-end; text-align: center;">
             <i class="el-icon-fullScreen" style="font-size: 30px;" @click="fullScreen"></i>
             <el-dropdown>
               <div style="display: flex; align-items: center;">

@@ -40,8 +40,8 @@ export default {
       console.log(routeName);
       if (routeName === "home" || routeName === "login") {
         return "主界面";
-      } else if (routeName === "element") {
-        return "element界面";
+      } else if (routeName === "detail") {
+        return "详情界面";
       } else if (routeName === "about") {
         return "关于页面";
       } else if (routeName === "map") {
