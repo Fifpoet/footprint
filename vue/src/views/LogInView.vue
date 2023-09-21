@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       loginForm: { //提交的表单
-        username: "",
+                username: "",
         password: "",
       },
       registerForm: { //注册新用户的表单

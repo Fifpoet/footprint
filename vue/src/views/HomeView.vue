@@ -65,7 +65,7 @@
       <!-- 主体 -->
       <el-container>
         <!-- 头部区域 -->
-        <el-header>
+        <el-header style="background-color: #eee;">
           <div style="display: flex; justify-content: flex-end;">
             <i class="el-icon-fullScreen" style="font-size: 30px;" @click="fullScreen"></i>
             <el-dropdown>
