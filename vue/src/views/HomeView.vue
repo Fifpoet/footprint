@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <el-container>
       <!-- 侧边栏 -->
       <el-aside :width="asideWidth" style="width:'200px'; height: 100vh; background-color: #eee; border: 1px solid gray;">
@@ -20,21 +19,9 @@
               <span>系统首页</span>
             </template>
           </el-menu-item>
-          <el-menu-item index="/detail">
-            <template slot="title">
-              <i class="el-icon-setting"></i>
-              <span>详情</span>
-            </template>
-          </el-menu-item>
-          <el-menu-item index="/login">
-            <template slot="title">
-              <i class="el-icon-monitor"></i>
-              <span>登录</span>
-            </template>
-          </el-menu-item>
           <el-menu-item index="/map">
             <template slot="title">
-              <i class="el-icon-warning-outline"></i>
+              <i class="el-icon-map-location"></i>
               <span>地图</span>
             </template>
           </el-menu-item>
@@ -44,7 +31,7 @@
               <span>关于</span>
             </template>
           </el-menu-item>
-
+          <!-- 
           <el-submenu>
             <template slot="title">
               <i class="el-icon-menu"></i>
@@ -56,7 +43,7 @@
                 <span>用户信息</span>
               </template>
             </el-menu-item>
-          </el-submenu>
+          </el-submenu> -->
 
         </el-menu>
 
@@ -65,19 +52,19 @@
       <!-- 主体 -->
       <el-container>
         <!-- 头部区域 -->
-        <el-header style="height: 60px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); text-align: right;">
-          <div style="height: 60px; display: flex; justify-content: flex-end; text-align: center;">
-            <i class="el-icon-fullScreen" style="font-size: 30px;" @click="fullScreen"></i>
-            <el-dropdown>
+        <el-header
+          style="height: 60px; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); text-align: right; background-color: #fefefe;">
+          <div style="height: 60px;">
+            <el-button type="text" @click="toLogInView" v-if="!this.$store.state.isLogIn">立即登录</el-button>
+
+            <el-dropdown @command="handleDropdownCommand" v-if="this.$store.state.isLogIn">
               <div style="display: flex; align-items: center;">
                 <img src="../assets/孙尚香时之恋人.jpg" alt="logo" style="height: 40px; width: 40px; margin: 0 20px;">
                 <span>{{ this.user.username }}</span>
               </div>
 
-              <el-dropdown-menu>
-                <el-dropdown-item>个人信息</el-dropdown-item>
-                <el-dropdown-item>修改密码</el-dropdown-item>
-                <el-dropdown-item>退出登录</el-dropdown-item>
+              <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="exitLogIn">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -109,9 +96,15 @@ export default {
     };
   },
   methods: {
-    fullScreen() {
-      document.documentElement.requestFullscreen();
+    toLogInView() {
+      this.$router.push("/login");
     },
+    handleDropdownCommand(command) {
+      if (command === "exitLogIn") {   //退出登录      
+        this.$store.commit("changeIsLogIn");
+        this.$message.success("退出登录成功！");
+      }
+    }
   },
 }
 </script>

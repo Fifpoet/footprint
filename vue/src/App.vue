@@ -37,9 +37,10 @@ export default {
       history.back();
     },
     getPageHeader(routeName) {
-      console.log(routeName);
-      if (routeName === "home" || routeName === "login") {
+      if (routeName === "home") {
         return "主界面";
+      } else if (routeName === "login") {
+        return "登录界面";
       } else if (routeName === "detail") {
         return "详情界面";
       } else if (routeName === "about") {
@@ -49,5 +50,5 @@ export default {
       }
     },
   },
-}
+};
 </script>

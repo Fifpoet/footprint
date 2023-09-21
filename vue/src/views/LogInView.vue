@@ -43,7 +43,7 @@
         </el-form-item>
       </el-form>
       <template v-slot:footer>
-        <div class="dialog-footer">
+        <div>
           <el-button type="primary" @click="registerUser" :loading="registerSubmitting">注册</el-button>
           <el-button @click="closeRegisterDialog">取消</el-button>
         </div>
@@ -60,7 +60,7 @@ export default {
   data() {
     return {
       loginForm: { //提交的表单
-                username: "",
+        username: "",
         password: "",
       },
       registerForm: { //注册新用户的表单
@@ -95,7 +95,15 @@ export default {
     closeRegisterDialog() {
       this.registerDialogVisible = false;
     },
+    closeLoginDialog() {
+      this.loginDialogVisible = false;
+    },
     submitLoginForm() {
+      this.$store.commit("changeIsLogIn");
+      this.$message.success("登录成功！");
+      this.closeLoginDialog();
+      this.$router.push("/");
+
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           const loginData = {
@@ -108,8 +116,7 @@ export default {
             .then(response => {
               if (response.data.success) {
                 // 登录成功
-                this.$message.success("登录成功！");
-                this.closeLoginDialog();
+
               } else {
                 // 登录失败
                 this.$message.error("登录失败！");
@@ -172,11 +179,5 @@ export default {
   margin: auto;
   width: 1000px;
   text-align: center;
-}
-
-.dialog-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 </style>

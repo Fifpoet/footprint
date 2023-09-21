@@ -4,7 +4,7 @@
         <el-header>Header</el-header>
   
         <el-container>
-          <el-aside width="200px">Aside</el-aside>
+          <el-aside width='200px'>Aside</el-aside>
           <el-main>
             <el-scrollbar wrap-class="scrollbar-wrap">
               <!-- 大块的内容 -->
