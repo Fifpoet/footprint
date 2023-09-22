@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/fifpoet/footprint/dao"
+	"github.com/fifpoet/footprint/global"
 	"github.com/fifpoet/footprint/model"
 	"github.com/fifpoet/footprint/service/jwt"
 	"github.com/gin-gonic/gin"
@@ -13,19 +14,13 @@ func Login(c *gin.Context) {
 	user := &model.LoginReq{}
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code": 40000,
-			"msg":  "invalid param: " + err.Error(),
-		})
+		global.Resp(c, global.CodeBadReq, global.MsgBadReq, err)
 		return
 	}
 	// TODO 读取db校验密码
 	dbUser, err := dao.UserRepo{}.FindById(1)
 	if &dbUser == nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"code": 40008,
-			"msg":  "user not found",
-		})
+		global.Resp(c, global.CodeNoUser, global.MsgNoUser, err)
 		return
 	}
 	if dbUser.Password != user.Password || dbUser.Name != user.UserName {
