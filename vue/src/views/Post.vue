@@ -21,7 +21,7 @@ export default {
     // 如果输入了标记信息
     // 创建标记并添加到地图上
     const marker = new this.$parent.$parent.BMap.Marker(this.$parent.$parent.clickedPoint);
-    this.$parent.$parent.mapInstance.addOverlay(marker);
+    this.$parent.mapInstance.addOverlay(marker);
 
     // 创建信息窗口显示标记信息
     const infoWindow = new this.$parent.$parent.BMap.InfoWindow(this.markerInfo);
