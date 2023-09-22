@@ -62,6 +62,7 @@ export default {
       loginForm: { //提交的表单
         username: "",
         password: "",
+        errorMessage: "",
       },
       registerForm: { //注册新用户的表单
         username: "",
@@ -98,40 +99,41 @@ export default {
     closeLoginDialog() {
       this.loginDialogVisible = false;
     },
-    submitLoginForm() {
-      this.$store.commit("changeIsLogIn");
-      this.$message.success("登录成功！");
-      this.closeLoginDialog();
-      this.$router.push("/");
-
-      this.$refs.loginForm.validate(valid => {
-        if (valid) {
-          const loginData = {
-            username: this.loginForm.username,
-            password: this.loginForm.password
-          };
-
-          // 调用登录接口，发送登录请求
-          api.login(loginData)
-            .then(response => {
-              if (response.data.success) {
-                // 登录成功
-
-              } else {
-                // 登录失败
-                this.$message.error("登录失败！");
-              }
-            })
-            .catch(error => {
-              // 处理登录请求错误 
-              console.log(error);
-              this.$message.error("登录失败！");
-            });
-        } else {
-          this.$message.error("登录失败！");
-          return false;
-        }
-      });
+    submitLoginForm() {   //登录逻辑
+      if (this.loginForm.username && this.loginForm.password) {
+        axios.post("/login", {
+          "UserName": this.loginForm.username,
+          "Email": "",
+          "Password": this.loginForm.password,
+        })
+          .then(response => {
+            // 登录成功处理逻辑
+            if (response.data.code === 20000) {
+              // 更新登录状态
+              this.$store.commit("isLogInTrue");
+              // 跳转到主页或其他页面
+              this.closeLoginDialog();
+              this.$router.push("/");
+              this.$message.success("登录成功！");
+            } else {
+              this.$message.error("用户名或密码错误，请重试");
+              // 登录失败处理逻辑
+              this.loginForm.errorMessage = response.data.message;
+              this.$message.error(this.loginForm.errorMessage);
+              this.loginForm.password = "";
+            }
+          })
+          .catch(error => {
+            // 登录失败处理逻辑
+            this.loginForm.errorMessage = "登录失败，请稍后重试";
+            this.$message.error(this.loginForm.errorMessage);
+            this.loginForm.password = "";
+          });
+      } else {
+        this.loginForm.errorMessage = "用户名或密码不能为空"
+        this.$message.error(this.loginForm.errorMessage);
+        this.loginForm.password = "";
+      }
     },
     registerUser() {
       //注册新用户

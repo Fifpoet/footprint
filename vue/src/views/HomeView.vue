@@ -62,8 +62,9 @@
                 <img src="../assets/孙尚香时之恋人.jpg" alt="logo" style="height: 40px; width: 40px; margin: 0 20px;">
                 <span>{{ this.user.username }}</span>
               </div>
-
+                
               <el-dropdown-menu slot="dropdown">
+                <el-dropdown-item command="changeUserInfo">修改个人信息</el-dropdown-item>
                 <el-dropdown-item command="exitLogIn">退出登录</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
@@ -100,9 +101,14 @@ export default {
       this.$router.push("/login");
     },
     handleDropdownCommand(command) {
-      if (command === "exitLogIn") {   //退出登录      
-        this.$store.commit("changeIsLogIn");
-        this.$message.success("退出登录成功！");
+      if (command === "changeUserInfo") {   //修改个人信息
+        this.$router.push("/changeuserinfo");
+      } else {
+        if (command === "exitLogIn") {   //退出登录      
+
+          this.$store.commit("isLogInFalse");
+          this.$message.success("退出登录成功！");
+        }
       }
     }
   },

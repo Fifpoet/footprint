@@ -16,8 +16,14 @@ const store = new Vuex.Store({
 		increment(state) {
 			state.counter++;
 		},
-		changeIsLogIn(state) {
-			state.isLogIn = state.isLogIn ? false : true;
+		isLogInTrue(state) {
+			state.isLogIn = true;
+		},
+		isLogInFalse(state) {
+			state.isLogIn = false;
+		},
+		changeUserName(state, name) {
+			state.username = name;
 		},
 	},
 	actions: {

@@ -1,4 +1,5 @@
 import Vue from "vue";
+import './plugins/axios'
 import App from "./App.vue";
 import router from "./router";
 import ElementUI from "element-ui";
@@ -6,17 +7,12 @@ import "element-ui/lib/theme-chalk/index.css";
 import "./assets/css/iconfonts/iconfont.css";
 import axios from "axios";
 import store from "./store/index";
-import { mapState } from "vuex";
-import { createStore } from "vuex";
 
 Vue.use(ElementUI, { size: "big" });
 
-// 创建一个 Axios 实例
-const instance = axios.create({
-	baseURL: "localhost:8080", // 设置全局请求路径
-});
+axios.defaults.baseURL = "http://localhost:8889";
 
-Vue.prototype.$https = instance; // 将实例挂载到 Vue 的原型上
+Vue.prototype.$http = axios;
 Vue.config.productionTip = false;
 
 new Vue({

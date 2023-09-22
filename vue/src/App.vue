@@ -47,6 +47,8 @@ export default {
         return "关于页面";
       } else if (routeName === "map") {
         return "地图界面";
+      } else if (routeName === "changeuserinfo") {
+        return "个人信息修改界面";
       }
     },
   },
