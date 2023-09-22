@@ -56,13 +56,14 @@ func initServer(address string, router *gin.Engine) server {
 func InitRoutes(router *gin.Engine) {
 	f := fileadapter.NewAdapter("config/basic_policy.csv")
 
+	router.Use(middleware.CorsAllowAll())
 	router.POST("/login", api.Login)
 	//为路由组添加log和panic恢复的中间件
 	authorized := router.Group("/")
 	authorized.Use(gin.Logger())
 	authorized.Use(gin.Recovery())
 	authorized.Use(middleware.TokenAuthMiddleware())
-	authorized.Use(middleware.Cors())
+	authorized.Use(middleware.CorsAllowAll())
 	{
 		authorized.POST("/api/todo", middleware.Authorize("resource", "write", f), api.Logout)
 		authorized.GET("/api/todo", middleware.Authorize("resource", "read", f), api.Logout)

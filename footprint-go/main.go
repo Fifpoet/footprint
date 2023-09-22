@@ -19,9 +19,8 @@ func main() {
 	global.FP_LOG = core.InitializeZap()
 	zap.ReplaceGlobals(global.FP_LOG)
 	global.FP_LOG.Info("server run success on ", zap.String("zap_log", "zap_log"))
-
-	//  TODO：3.数据库连接
-
+	//  3.数据库连接
+	global.FP_DB = core.Gorm()
 	//	TODO：4.其他初始化
 
 	//	TODO：5.启动服务
