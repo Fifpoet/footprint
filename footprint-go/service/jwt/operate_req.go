@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// ExtractToken Authorization携带token默认带一个bearer
+// ExtractToken Authorization携带token按OAuth2标准带一个bearer
 func ExtractToken(r *http.Request) string {
 	bearToken := r.Header.Get("Authorization")
 	strArr := strings.Split(bearToken, " ")

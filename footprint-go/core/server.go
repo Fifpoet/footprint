@@ -54,7 +54,7 @@ func initServer(address string, router *gin.Engine) server {
 }
 
 func InitRoutes(router *gin.Engine) {
-	f := &fileadapter.Adapter{}
+	f := fileadapter.NewAdapter("config/basic_policy.csv")
 
 	router.POST("/login", api.Login)
 	//为路由组添加log和panic恢复的中间件

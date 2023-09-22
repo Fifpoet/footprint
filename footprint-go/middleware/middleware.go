@@ -43,7 +43,7 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 		}
 		// 将当前请求的username信息保存到请求的上下文c上
 		c.Set("userId", mc.UserId)
-		c.Set("userName", mc.RegisteredClaims.ID)
+		c.Set("userName", mc.UserName)
 		c.Next() // 后续的处理函数可以用过c.Get("username")来获取当前请求的用户信息
 	}
 }
@@ -51,18 +51,17 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 // Authorize determines if current subject has been authorized to take an action on an object.
 func Authorize(obj string, act string, adapter persist.Adapter) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		metadata, _ := c.Get("userName")
-		username, _ := metadata.(string)
-		if metadata == "" {
+		id, _ := c.Get("userId")
+		username, _ := c.Get("userName")
+		if id == "" {
 			c.JSON(http.StatusUnauthorized, "unauthorized")
 			return
 		}
 		// casbin enforces policy
-		ok, err := enforce(username, obj, act, adapter)
-		//ok, err := enforce(val.(string), obj, act, adapter)
+		ok, err := enforce(username.(string), obj, act, adapter)
 		if err != nil {
 			log.Println(err)
-			c.AbortWithStatusJSON(500, "error occurred when authorizing user")
+			c.AbortWithStatusJSON(500, "error occurred when authorizing user: "+err.Error())
 			return
 		}
 		if !ok {

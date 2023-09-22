@@ -10,12 +10,15 @@ import (
 const TokenExpireDuration = time.Hour * 2
 const TokenRefreshDuration = time.Hour * 24 * 7
 
+// MySecret key must be []byte.
+// https://golang-jwt.github.io/jwt/usage/signing_methods/#signing-methods-and-key-types
 var MySecret = []byte("tnirptoof") // TODO 生成签名的密钥存入配置中心
 
 func GenerateToken(userInfo model.UserInfo) (string, string, error) {
 	expireTime, refreshTime := time.Now().Add(TokenExpireDuration), time.Now().Add(TokenRefreshDuration)
 	tokenClaims := &MyClaims{
-		UserId: userInfo.Model.ID,
+		UserId:   userInfo.Model.ID,
+		UserName: userInfo.Name,
 		//字段含义见jwt标准
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "zhaoce",
@@ -24,7 +27,8 @@ func GenerateToken(userInfo model.UserInfo) (string, string, error) {
 		},
 	}
 	refreshClaims := &MyClaims{
-		UserId: userInfo.Model.ID,
+		UserId:   userInfo.Model.ID,
+		UserName: userInfo.Name,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    "zhaoce",
 			Subject:   "refresh",
@@ -39,7 +43,7 @@ func GenerateToken(userInfo model.UserInfo) (string, string, error) {
 	if err != nil {
 		return "", "", err
 	}
-	refresh, err := loginToken.SignedString(refreshToken)
+	refresh, err := refreshToken.SignedString(MySecret)
 	if err != nil {
 		return "", "", err
 	}

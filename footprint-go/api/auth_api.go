@@ -36,7 +36,14 @@ func Login(c *gin.Context) {
 		return
 	}
 	// 双token
-	access, refresh, _ := jwt.GenerateToken(dbUser)
+	access, refresh, err := jwt.GenerateToken(dbUser)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 50001,
+			"msg":  "generate token error: " + err.Error(),
+		})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{
 		"code":          20000,
 		"msg":           "success",
