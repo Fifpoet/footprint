@@ -13,3 +13,8 @@ new Vue({
 	router,
 	render: (h) => h(App),
 }).$mount("#app");
+
+import BaiduMap from 'vue-baidu-map'
+Vue.use(BaiduMap, { ak: 'c4Iwa3iL5rzVF9Wn21B3ckGPXPQoyNWB' })
+
+

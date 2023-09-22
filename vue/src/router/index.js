@@ -32,6 +32,11 @@ const routes = [
     name: 'map',
     component: () => import('../views/MapView.vue')
   },
+  {
+    path: '/post',
+    name: 'post',
+    component: () => import('../views/Post.vue')
+  },
 ]
 
 const router = new VueRouter({
@@ -41,3 +46,5 @@ const router = new VueRouter({
 })
 
 export default router
+
+
