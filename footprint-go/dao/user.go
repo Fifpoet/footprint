@@ -1,10 +1,11 @@
 package dao
 
 import (
+	"github.com/fifpoet/footprint/global"
 	"github.com/fifpoet/footprint/model"
 )
 
-var us = []model.UserInfo{
+var us = []model.User{
 	{
 		Name:     "admin",
 		Password: "123",
@@ -14,11 +15,16 @@ var us = []model.UserInfo{
 		Password: "11",
 	},
 }
+var db = global.FP_DB
 
 type UserRepo struct {
-	Users []model.UserInfo
+	Users []model.User
 }
 
-func (r UserRepo) FindById(id uint) (model.UserInfo, error) {
-	return us[0], nil
+func (r UserRepo) FindById(id uint) (UserRepo, error) {
+	var res UserRepo
+	if err := db.First(&res, id).Error; err != nil {
+		return res, err
+	}
+	return res, nil
 }

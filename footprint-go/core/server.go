@@ -27,7 +27,7 @@ func RunServer() {
 	})
 	InitRoutes(r)
 	address := fmt.Sprintf(":%d", global.FP_CONFIG.App.Port)
-	s := initServer(address, r)
+	s := InitializeServer(address, r)
 
 	global.FP_LOG.Info("server run success on ", zap.String("address", address))
 	s.ListenAndServe()
@@ -37,7 +37,7 @@ func RunServer() {
 这些配置可以帮助我们优化HTTP服务器的性能和安全性。通过设置超时时间和最大字节数等参数，可以防止一些潜在的安全问题和性能问题。
 例如，设置超时时间可以防止客户端故意保持连接而导致的资源浪费，设置最大字节数可以防止客户端发送过大的请求头而导致的资源浪费和安全问题。
 */
-func initServer(address string, router *gin.Engine) server {
+func InitializeServer(address string, router *gin.Engine) server {
 	// 使用endless库创建一个HTTP服务器，其中address是服务器的监听地址（如:8080），router是HTTP请求路由器。
 	s := endless.NewServer(address, router)
 

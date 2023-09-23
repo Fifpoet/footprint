@@ -76,6 +76,6 @@ func InitializeViper(path ...string) *viper.Viper {
 	if err = vip.Unmarshal(&global.FP_CONFIG); err != nil {
 		fmt.Println(err)
 	}
-	fmt.Println("====footprint-viper====: viper init config success")
+	fmt.Println("====1. footprint-viper====: viper init config success")
 	return vip
 }

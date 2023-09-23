@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/casbin/casbin"
 	"github.com/casbin/casbin/persist"
-	"github.com/fifpoet/footprint/service/jwt"
+	"github.com/fifpoet/footprint/service"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -13,7 +13,7 @@ import (
 
 func TokenAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		authHeader := jwt.ExtractToken(c.Request)
+		authHeader := service.ExtractToken(c.Request)
 		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"code": 40001,
@@ -32,7 +32,7 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		mc, err := jwt.ParseToken(authHeader)
+		mc, err := service.ParseToken(authHeader)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"code": 2005,
