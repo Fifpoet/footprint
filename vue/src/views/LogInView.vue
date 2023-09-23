@@ -115,17 +115,18 @@ export default {
               this.closeLoginDialog();
               this.$router.push("/");
               this.$message.success("登录成功！");
-            } else {
-              this.$message.error("用户名或密码错误，请重试");
-              // 登录失败处理逻辑
-              this.loginForm.errorMessage = response.data.message;
-              this.$message.error(this.loginForm.errorMessage);
-              this.loginForm.password = "";
-            }
+             }
+            // else if(response.data.code === 40003) {
+            //   this.$message.error("用户名或密码错误，请重试");
+            //   // 登录失败处理逻辑
+            //   this.loginForm.errorMessage = response.data.message;
+            //   this.$message.error(this.loginForm.errorMessage);
+            //   this.loginForm.password = "";
+            // }
           })
           .catch(error => {
             // 登录失败处理逻辑
-            this.loginForm.errorMessage = "登录失败，请稍后重试";
+            this.loginForm.errorMessage = "登录失败，请重试";
             this.$message.error(this.loginForm.errorMessage);
             this.loginForm.password = "";
           });
