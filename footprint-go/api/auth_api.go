@@ -2,8 +2,9 @@ package api
 
 import (
 	"github.com/fifpoet/footprint/dao"
+	"github.com/fifpoet/footprint/global"
 	"github.com/fifpoet/footprint/model"
-	"github.com/fifpoet/footprint/service/jwt"
+	"github.com/fifpoet/footprint/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -13,22 +14,16 @@ func Login(c *gin.Context) {
 	user := &model.LoginReq{}
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code": 40000,
-			"msg":  "invalid param: " + err.Error(),
-		})
+		global.Resp(c, global.CodeBadReq, global.MsgBadReq, err)
 		return
 	}
 	// TODO 读取db校验密码
 	dbUser, err := dao.UserRepo{}.FindById(1)
 	if &dbUser == nil {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"code": 40008,
-			"msg":  "user not found",
-		})
+		global.Resp(c, global.CodeNoUser, global.MsgNoUser, err)
 		return
 	}
-	if dbUser.Password != user.Password || dbUser.Name != user.UserName {
+	if dbUser.Users[0].Password != user.Password || dbUser.Users[0].Name != user.UserName {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"code": 40003,
 			"msg":  "name or password error",
@@ -36,7 +31,7 @@ func Login(c *gin.Context) {
 		return
 	}
 	// 双token
-	access, refresh, err := jwt.GenerateToken(dbUser)
+	access, refresh, err := service.GenerateToken(dbUser.Users[0])
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": 50001,

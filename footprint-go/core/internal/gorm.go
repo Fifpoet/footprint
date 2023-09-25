@@ -22,12 +22,10 @@ type _gorm struct{}
 // Config gorm 自定义配置
 func (g *_gorm) Config(prefix string, singular bool) *gorm.Config {
 
-	// 将传入的字符串前缀和单复数形式参数应用到 GORM 的命名策略中，并禁用迁移过程中的外键约束，返回最终生成的 GORM 配置信息。
 	config := &gorm.Config{
-		// 命名策略
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   prefix,   // 表前缀，在表名前添加前缀，如添加用户模块的表前缀 user_
-			SingularTable: singular, // 是否使用单数形式的表名，如果设置为 true，那么 User 模型会对应 users 表
+			TablePrefix:   prefix,   // 表名前缀
+			SingularTable: singular, // 是否使用单数形式的表名
 		},
 		// 是否在迁移时禁用外键约束，默认为 false，表示会根据模型之间的关联自动生成外键约束语句
 		DisableForeignKeyConstraintWhenMigrating: true,
