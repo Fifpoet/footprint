@@ -20,3 +20,6 @@ new Vue({
 	store, // 将 Vuex Store 实例挂载到 Vue 实例中
 	render: (h) => h(App),
 }).$mount("#app");
+
+import BaiduMap from 'vue-baidu-map'
+Vue.use(BaiduMap, { ak: 'c4Iwa3iL5rzVF9Wn21B3ckGPXPQoyNWB' })

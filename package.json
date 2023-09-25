@@ -1,5 +1,6 @@
 {
   "dependencies": {
-    "element-plus": "^2.3.14"
+    "element-plus": "^2.3.14",
+    "less-loader": "^11.1.3"
   }
 }
