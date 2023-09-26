@@ -65,8 +65,8 @@ func InitRoutes(router *gin.Engine) {
 	authorized.Use(middleware.TokenAuthMiddleware())
 	authorized.Use(middleware.CorsAllowAll())
 	{
-		authorized.POST("/api/todo", middleware.Authorize("resource", "write", f), api.Logout)
-		authorized.GET("/api/todo", middleware.Authorize("resource", "read", f), api.Logout)
+		authorized.POST("/api/article", middleware.Authorize("resource", "write", f), api.UploadArticle)
+		authorized.GET("/api/article", middleware.Authorize("resource", "read", f), api.GetArticle)
 		authorized.POST("/logout", api.Logout)
 		authorized.POST("/refresh", api.Refresh)
 	}

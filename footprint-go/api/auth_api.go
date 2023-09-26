@@ -14,31 +14,21 @@ func Login(c *gin.Context) {
 	user := &model.LoginReq{}
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		global.Resp(c, global.CodeBadReq, global.MsgBadReq, err)
+		global.Resp(c, global.CodeBadReq, global.MsgBadReq, http.StatusBadRequest, err)
 		return
 	}
 	// TODO 读取db校验密码
-	dbUser, err := dao.UserRepo{}.FindById(1)
+	dbUser, err := dao.FindByName(user.UserName)
 	if &dbUser == nil {
-		global.Resp(c, global.CodeNoUser, global.MsgNoUser, err)
+		global.Resp(c, global.CodeNoUser, global.MsgNoUser, http.StatusUnauthorized, err)
 		return
 	}
-	if dbUser.Users[0].Password != user.Password || dbUser.Users[0].Name != user.UserName {
-		c.JSON(http.StatusUnauthorized, gin.H{
-			"code": 40003,
-			"msg":  "name or password error",
-		})
+	if dbUser.Password != user.Password || dbUser.Name != user.UserName {
+		global.Resp(c, global.CodeAuthError, global.MsgAuthError, http.StatusUnauthorized, nil)
 		return
 	}
 	// 双token
-	access, refresh, err := service.GenerateToken(dbUser.Users[0])
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"code": 50001,
-			"msg":  "generate token error: " + err.Error(),
-		})
-		return
-	}
+	access, refresh, err := service.GenerateToken(*dbUser)
 	c.JSON(http.StatusOK, gin.H{
 		"code":          20000,
 		"msg":           "success",

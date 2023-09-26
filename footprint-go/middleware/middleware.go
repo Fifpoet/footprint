@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/casbin/casbin"
 	"github.com/casbin/casbin/persist"
+	"github.com/fifpoet/footprint/global"
 	"github.com/fifpoet/footprint/service"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -15,29 +16,15 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := service.ExtractToken(c.Request)
 		if authHeader == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code": 40001,
-				"msg":  "请登录",
-			})
+			global.Resp(c, global.CodeUnAuth, global.MsgUnAuth, http.StatusUnauthorized, nil)
 			c.Abort()
 			return
 		}
 		// 按.分割, 解析token到claim
 		parts := strings.Split(authHeader, ".")
-		if len(parts) != 3 {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code": 2004,
-				"msg":  "请求头中auth格式有误",
-			})
-			c.Abort()
-			return
-		}
 		mc, err := service.ParseToken(authHeader)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{
-				"code": 2005,
-				"msg":  "无效的Token",
-			})
+		if err != nil || len(parts) != 3 {
+			global.Resp(c, global.CodeTokenInvalid, global.MsgTokenInvalid, http.StatusForbidden, nil)
 			c.Abort()
 			return
 		}
