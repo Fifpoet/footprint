@@ -56,19 +56,22 @@ func InitializeServer(address string, router *gin.Engine) server {
 func InitRoutes(router *gin.Engine) {
 	f := fileadapter.NewAdapter("config/basic_policy.csv")
 
-	router.Use(middleware.CorsAllowAll())
-	router.POST("/login", api.Login)
 	//为路由组添加log和panic恢复的中间件
-	authorized := router.Group("/")
-	authorized.Use(gin.Logger())
-	authorized.Use(gin.Recovery())
-	authorized.Use(middleware.TokenAuthMiddleware())
-	authorized.Use(middleware.CorsAllowAll())
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
+	router.Use(middleware.Cors())
+
+	loginApi := router.Group("login")
 	{
-		authorized.POST("/api/article", middleware.Authorize("resource", "write", f), api.UploadArticle)
-		authorized.GET("/api/article", middleware.Authorize("resource", "read", f), api.GetArticle)
-		authorized.POST("/logout", api.Logout)
-		authorized.POST("/refresh", api.Refresh)
+		loginApi.POST("/", api.Login)
+	}
+
+	authority := router.Group("api").Use(middleware.TokenAuthMiddleware())
+	{
+		authority.POST("/article", middleware.Authorize("resource", "write", f), api.UploadArticle)
+		authority.GET("/article", middleware.Authorize("resource", "read", f), api.GetArticle)
+		authority.POST("/logout", api.Logout)
+		authority.POST("/refresh", api.Refresh)
 	}
 
 }
