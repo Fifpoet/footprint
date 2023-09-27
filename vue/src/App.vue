@@ -1,7 +1,7 @@
 <template>
   <div id="/">
     <!-- 页头 -->
-    <el-page-header @back="goback" :content="pageHeader" style="margin-top: 20px; margin-bottom: 30px;"></el-page-header>
+    <el-page-header @back="goback" :content="pageHeader" style="margin-top: 20px; margin-bottom: 30px;font-weight: bold"></el-page-header>
     <router-view />
   </div>
 </template>

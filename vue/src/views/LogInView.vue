@@ -114,15 +114,14 @@ export default {
               // 跳转到主页或其他页面
               this.closeLoginDialog();
               this.$router.push("/");
+
               this.$message.success("登录成功！");
-             }
-            // else if(response.data.code === 40003) {
-            //   this.$message.error("用户名或密码错误，请重试");
-            //   // 登录失败处理逻辑
-            //   this.loginForm.errorMessage = response.data.message;
-            //   this.$message.error(this.loginForm.errorMessage);
-            //   this.loginForm.password = "";
-            // }
+
+              this.$store.commit("changeUserName", this.loginForm.username);
+
+              //接收token
+              this.$store.state.token = response.data.access_token;
+            }
           })
           .catch(error => {
             // 登录失败处理逻辑
@@ -134,7 +133,85 @@ export default {
         this.loginForm.errorMessage = "用户名或密码不能为空"
         this.$message.error(this.loginForm.errorMessage);
         this.loginForm.password = "";
+      };
+
+
+      // markedPoint = {}
+      // axios.get("/") // 替换成你的后端接口地址
+      //   .then(response => {
+      //     // 处理成功响应
+      //     console.log(response.data); // 输出获取到的 JSON 数据
+      //     markedPoint.marker = new BMap.Marker()
+      //   })
+      //   .catch(error => {
+      //     // 处理错误响应
+      //     console.error(error);
+      //   });
+
+      // axios.get("/api/article?id=1", {
+      //   headers: {
+      //     Authorization: "Bearer" + this.$store.state.token	 // 在请求头中添加 Authorization 字段，值为 Bearer + 空格 + token
+      //   }
+      // })
+      //   .then(response => {
+      //     // 处理响应
+      //     console.log(tttt);
+      //     let markedPoint = {
+      //       marker: new BMap.Marker(new BMap.Point(response.data.lng, response.data.lat)),
+      //       id: response.data.id,  
+      //       title: response.data.Title,
+      //       detail: response.data.Detail,
+      //       pictures: "",
+      //       location: response.data.Location,
+      //     }
+      //       this.$store.commit("addMarkedPoint", markedPoint);
+      //       console.log(markedPoint);
+      //   })
+      //   .catch(error => {
+      //     // 处理错误
+      //     console.log("error");
+      //   });
+
+      
+      let markedPoint = {
+        point: {
+          lng: 114.355555,
+          lat: 30.531512,
+          //中心 lng:114.365777  lat:30.531512 
+        },
+        id: 1,
+        title: "title",
+        detail: "detail",
+        pictures: "",
+        location: {
+          city: "city",
+          district: "district",
+          province: "province",
+          street: "street",
+          streetNumber: "streetNumber",
+        },
       }
+      this.$store.commit("addMarkedPoint", markedPoint);
+      let markedPoint2 = {
+        point: {
+          lng: 114.355555,
+          lat: 30.56,
+          //中心 lng:114.365777  lat:30.531512 
+        },
+        id: 2,
+        title: "title",
+        detail: "detail",
+        pictures: "",
+        location: {
+          city: "city",
+          district: "district",
+          province: "province",
+          street: "street",
+          streetNumber: "streetNumber",
+        },
+      }
+      this.$store.commit("addMarkedPoint", markedPoint2);
+
     },
     registerUser() {
       //注册新用户

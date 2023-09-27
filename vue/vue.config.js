@@ -5,9 +5,9 @@ module.exports = defineConfig({
     port: 8080,
   },
   chainWebpack: config =>{
-    config.plugin('html')
+    config.plugin("html")
     .tap(args=>{
-      args[0].title = "时之恋人";
+      args[0].title = "足迹";
       return args;
     })
   },

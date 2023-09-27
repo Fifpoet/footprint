@@ -10,6 +10,8 @@ const store = new Vuex.Store({
 		counter: 0,
 		username: "",
 		isLogIn: false,
+		token: "",
+		markedPoints: [],
 	},
 	mutations: {
 		// 定义修改状态的方法
@@ -24,6 +26,9 @@ const store = new Vuex.Store({
 		},
 		changeUserName(state, name) {
 			state.username = name;
+		},
+		addMarkedPoint(state, markedPoint) {
+			state.markedPoints.push(markedPoint);
 		},
 	},
 	actions: {
