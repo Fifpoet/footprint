@@ -5,6 +5,11 @@ import "github.com/fifpoet/footprint/model/internal"
 type LoginReq struct {
 	UserName string
 	Password string
+}
+
+type RegisterReq struct {
+	UserName string
+	Password string
 	Email    string
 }
 

@@ -51,3 +51,20 @@ func Refresh(c *gin.Context) {
 func Logout(c *gin.Context) {
 	//TODO
 }
+
+func Register(c *gin.Context) {
+	user := &model.RegisterReq{}
+	err := c.ShouldBindJSON(&user)
+	if err != nil {
+		global.Resp(c, global.CodeBadReq, global.MsgBadReq, http.StatusBadRequest, err)
+		return
+	}
+	err = dao.Add(*user)
+	if err != nil {
+		global.Resp(c, global.CodeDaoError, global.MsgDaoError, http.StatusInternalServerError, nil)
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 20000,
+		"msg":  "success",
+	})
+}

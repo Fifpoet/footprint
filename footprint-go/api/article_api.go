@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
-	"strconv"
 )
 
 func UploadArticle(c *gin.Context) {
@@ -40,9 +39,9 @@ func UploadArticle(c *gin.Context) {
 }
 
 func GetArticle(c *gin.Context) {
-	var id uint64
-	id, _ = strconv.ParseUint(c.Query("id"), 10, 64)
-	arts, err := dao.ArticleRepo{}.FindById(uint(id))
+	userName, _ := c.Get("userName")
+	user, _ := dao.FindByName(userName.(string))
+	arts, err := dao.ArticleRepo{}.FindById(user.ID)
 	if err != nil {
 		global.Resp(c, global.CodeDaoError, global.MsgDaoError, http.StatusInternalServerError, nil)
 		return

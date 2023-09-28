@@ -61,9 +61,10 @@ func InitRoutes(router *gin.Engine) {
 	router.Use(gin.Recovery())
 	router.Use(middleware.Cors())
 
-	loginApi := router.Group("login")
+	loginApi := router.Group("")
 	{
-		loginApi.POST("/", api.Login)
+		loginApi.POST("/login", api.Login)
+		loginApi.POST("/register", api.Register)
 	}
 
 	authority := router.Group("api").Use(middleware.TokenAuthMiddleware())
