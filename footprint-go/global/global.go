@@ -2,6 +2,7 @@ package global
 
 import (
 	"github.com/fifpoet/footprint/config"
+	"github.com/minio/minio-go/v7"
 	"github.com/redis/go-redis/v9"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
@@ -14,4 +15,5 @@ var (
 	FP_LOG    *zap.Logger
 	FP_DB     *gorm.DB
 	FP_REDIS  *redis.Client
+	FP_MINIO  *minio.Client
 )

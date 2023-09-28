@@ -32,3 +32,10 @@ redis: # redis 配置
   db: 0
   addr: 127.0.0.1:6379
   password: "zc1669600787"
+minio:
+  endpoint: "127.0.0.1:9000"
+  access_key_id: 8uGXWQ1cj9oKijgq1fM3
+  secret_access_key: 7bhD5pif37r41hWOnLKUfPneuMa2U14qEPoiNKuG
+  use_ssl: false
+  bucket: "footprint01"
+  location: ""

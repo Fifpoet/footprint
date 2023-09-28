@@ -35,7 +35,8 @@ func main() {
 		},
 	}
 	global.FP_DB.Clauses(clause.OnConflict{DoNothing: true}).Create(&admin)
-	//	4.其他初始化
+	//	4.minio初始化连接
+	global.FP_MINIO = core.InitMinio()
 	//	5.启动服务
 	core.RunServer()
 
