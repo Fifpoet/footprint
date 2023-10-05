@@ -6,21 +6,23 @@ import (
 
 // 用户模块
 const (
-	CodeSuccess      = "20000"
-	CodeBadReq       = "40000"
-	CodeUnAuth       = "40003"
-	CodeNoUser       = "40006"
-	CodeAuthError    = "40007"
-	CodeTokenInvalid = "40008"
-	CodeDaoError     = "50001"
+	CodeSuccess       = "20000"
+	CodeBadReq        = "40000"
+	CodeUnAuth        = "40003"
+	CodeNoUser        = "40006"
+	CodeAuthError     = "40007"
+	CodeTokenInvalid  = "40008"
+	CodeDaoError      = "50001"
+	CodeInternalError = "50002"
 
-	MsgSuccess      = "success"
-	MsgBadReq       = "invalid params"
-	MsgUnAuth       = "login please"
-	MsgNoUser       = "no user found"
-	MsgAuthError    = "auth error"
-	MsgTokenInvalid = "token invalid"
-	MsgDaoError     = "error operating database"
+	MsgSuccess       = "success"
+	MsgBadReq        = "invalid params"
+	MsgUnAuth        = "login please"
+	MsgNoUser        = "no user found"
+	MsgAuthError     = "auth error"
+	MsgTokenInvalid  = "token invalid"
+	MsgDaoError      = "error operating database"
+	MsgInternalError = "internal error"
 )
 
 // 文件上传模块

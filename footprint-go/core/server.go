@@ -65,12 +65,11 @@ func InitRoutes(router *gin.Engine) {
 	{
 		loginApi.POST("/login", api.Login)
 		loginApi.POST("/register", api.Register)
-		loginApi.POST("/logout", api.Logout)
-		loginApi.POST("/refresh", api.Refresh)
 	}
 
 	authority := router.Group("api").Use(middleware.TokenAuthMiddleware())
 	{
+		authority.POST("/refresh", api.Refresh)
 		authority.POST("/article", middleware.Authorize("resource", "write", f), api.UploadArticle)
 		authority.GET("/article", middleware.Authorize("resource", "read", f), api.GetArticle)
 		authority.POST("/upload", middleware.Authorize("resource", "write", f), api.UploadFile)

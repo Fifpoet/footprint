@@ -6,6 +6,7 @@ import (
 	"github.com/fifpoet/footprint/model"
 	"github.com/fifpoet/footprint/service"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -17,7 +18,6 @@ func Login(c *gin.Context) {
 		global.Resp(c, global.CodeBadReq, global.MsgBadReq, http.StatusBadRequest, err)
 		return
 	}
-	// TODO 读取db校验密码
 	dbUser, err := dao.FindByName(user.UserName)
 	if &dbUser == nil {
 		global.Resp(c, global.CodeNoUser, global.MsgNoUser, http.StatusUnauthorized, err)
@@ -37,19 +37,24 @@ func Login(c *gin.Context) {
 	})
 }
 
-// Refresh access过期 Refresh没过期则刷新
-// TODO
+// Refresh 请求传入refresh token, 直接刷新两个token
 func Refresh(c *gin.Context) {
-	tks := map[string]string{}
-	if err := c.ShouldBindJSON(&tks); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, err.Error())
+	name, _ := c.Get("userName")
+	id, _ := c.Get("userId")
+	access, refresh, err := service.GenerateToken(model.User{
+		Name:  name.(string),
+		Model: gorm.Model{ID: id.(uint)},
+	})
+	if err != nil {
+		global.Resp(c, global.CodeInternalError, global.MsgInternalError, http.StatusInternalServerError, nil)
 		return
 	}
-	//校验token
-}
-
-func Logout(c *gin.Context) {
-	//TODO
+	c.JSON(http.StatusOK, gin.H{
+		"code":          20000,
+		"msg":           "success",
+		"access_token":  access,
+		"refresh_token": refresh,
+	})
 }
 
 func Register(c *gin.Context) {
