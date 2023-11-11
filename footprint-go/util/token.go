@@ -1,4 +1,4 @@
-package service
+package utils
 
 import (
 	"errors"
@@ -20,16 +20,6 @@ type MyClaims struct {
 	UserId   uint
 	UserName string
 	jwt.RegisteredClaims
-}
-
-// ExtractToken Authorization携带token按OAuth2标准带一个bearer
-func ExtractToken(r *http.Request) string {
-	bearToken := r.Header.Get("Authorization")
-	strArr := strings.Split(bearToken, " ")
-	if len(strArr) == 2 {
-		return strArr[1]
-	}
-	return ""
 }
 
 func GenerateToken(userInfo model.User) (string, string, error) {
@@ -66,6 +56,17 @@ func GenerateToken(userInfo model.User) (string, string, error) {
 		return "", "", err
 	}
 	return token, refresh, nil
+}
+
+// ExtractTokenPayload Authorization携带token按OAuth2标准带一个bearer
+func ExtractTokenPayload(r *http.Request) *MyClaims {
+	bearToken := r.Header.Get("Authorization")
+	strArr := strings.Split(bearToken, " ")
+	if len(strArr) != 2 {
+		return nil
+	}
+	c, _ := ParseToken(strArr[1])
+	return c
 }
 
 // ParseToken 解析JWT到claims中

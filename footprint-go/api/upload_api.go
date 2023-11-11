@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/fifpoet/footprint/global"
-	"github.com/fifpoet/footprint/service"
+	"github.com/fifpoet/footprint/util"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -10,21 +10,21 @@ import (
 func UploadFile(c *gin.Context) {
 	file, err := c.FormFile("file")
 	if err != nil {
-		global.Resp(c, global.CodeNoFileRecv, global.MsgNoFileRecv, http.StatusInternalServerError, err)
+		global.Resp(c, global.NoFileRecv, err)
 		return
 	}
 	//Reader流打开文件
 	reader, err := file.Open()
 	if err != nil {
-		global.Resp(c, global.CodeFileCantOpen, global.MsgFileCantOpen, http.StatusInternalServerError, err)
+		global.Resp(c, global.FileCantOpen, err)
 		return
 	}
 	defer reader.Close()
 	//上传
 	conf := global.FP_CONFIG.Minio
-	url, err := service.UploadFile(global.FP_MINIO, conf.Bucket, conf.Location, file.Filename, reader, file.Size)
+	url, err := utils.UploadFile(global.FP_MINIO, conf.Bucket, conf.Location, file.Filename, reader, file.Size)
 	if err != nil {
-		global.Resp(c, global.CodeFileUploadError, global.MsgFileUploadError, http.StatusInternalServerError, err)
+		global.Resp(c, global.FileUploadError, err)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

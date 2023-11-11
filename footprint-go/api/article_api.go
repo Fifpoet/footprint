@@ -13,7 +13,7 @@ func UploadArticle(c *gin.Context) {
 	req := &model.UploadArticleReq{}
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
-		global.Resp(c, global.CodeBadReq, global.MsgBadReq, http.StatusBadRequest, err)
+		global.Resp(c, global.BadReq, err)
 		return
 	}
 	userId, _ := c.Get("userId")
@@ -32,10 +32,10 @@ func UploadArticle(c *gin.Context) {
 	}
 	err = dao.ArticleRepo{}.Update(article)
 	if err != nil {
-		global.Resp(c, global.CodeDaoError, global.MsgDaoError, http.StatusInternalServerError, nil)
+		global.Resp(c, global.DaoError, nil)
 		return
 	}
-	global.Resp(c, global.CodeSuccess, global.MsgSuccess, http.StatusOK, nil)
+	global.Resp(c, global.Success, nil)
 }
 
 func GetArticle(c *gin.Context) {
@@ -43,7 +43,7 @@ func GetArticle(c *gin.Context) {
 	user, _ := dao.FindByName(userName.(string))
 	arts, err := dao.ArticleRepo{}.FindById(user.ID)
 	if err != nil {
-		global.Resp(c, global.CodeDaoError, global.MsgDaoError, http.StatusInternalServerError, nil)
+		global.Resp(c, global.DaoError, nil)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

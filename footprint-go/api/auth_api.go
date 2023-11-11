@@ -4,7 +4,7 @@ import (
 	"github.com/fifpoet/footprint/dao"
 	"github.com/fifpoet/footprint/global"
 	"github.com/fifpoet/footprint/model"
-	"github.com/fifpoet/footprint/service"
+	"github.com/fifpoet/footprint/util"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
@@ -15,20 +15,20 @@ func Login(c *gin.Context) {
 	user := &model.LoginReq{}
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		global.Resp(c, global.CodeBadReq, global.MsgBadReq, http.StatusBadRequest, err)
+		global.Resp(c, global.BadReq, err)
 		return
 	}
 	dbUser, err := dao.FindByName(user.UserName)
 	if &dbUser == nil {
-		global.Resp(c, global.CodeNoUser, global.MsgNoUser, http.StatusUnauthorized, err)
+		global.Resp(c, global.NoUser, err)
 		return
 	}
-	if dbUser.Password != user.Password || dbUser.Name != user.UserName {
-		global.Resp(c, global.CodeAuthError, global.MsgAuthError, http.StatusUnauthorized, nil)
+	if dbUser.Password != user.Password {
+		global.Resp(c, global.AuthError, nil)
 		return
 	}
 	// 双token
-	access, refresh, err := service.GenerateToken(*dbUser)
+	access, refresh, err := utils.GenerateToken(*dbUser)
 	c.JSON(http.StatusOK, gin.H{
 		"code":          20000,
 		"msg":           "success",
@@ -37,16 +37,16 @@ func Login(c *gin.Context) {
 	})
 }
 
-// Refresh 请求传入refresh token, 直接刷新两个token
+// Refresh 请求传入refresh token, context中已经有userName, 直接刷新两个token
 func Refresh(c *gin.Context) {
 	name, _ := c.Get("userName")
 	id, _ := c.Get("userId")
-	access, refresh, err := service.GenerateToken(model.User{
+	access, refresh, err := utils.GenerateToken(model.User{
 		Name:  name.(string),
 		Model: gorm.Model{ID: id.(uint)},
 	})
 	if err != nil {
-		global.Resp(c, global.CodeInternalError, global.MsgInternalError, http.StatusInternalServerError, nil)
+		global.Resp(c, global.InternalError, nil)
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -61,12 +61,13 @@ func Register(c *gin.Context) {
 	user := &model.RegisterReq{}
 	err := c.ShouldBindJSON(&user)
 	if err != nil {
-		global.Resp(c, global.CodeBadReq, global.MsgBadReq, http.StatusBadRequest, err)
+		global.Resp(c, global.BadReq, err)
 		return
 	}
 	err = dao.Add(*user)
 	if err != nil {
-		global.Resp(c, global.CodeDaoError, global.MsgDaoError, http.StatusInternalServerError, nil)
+		global.Resp(c, global.DaoError, nil)
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 20000,

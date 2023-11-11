@@ -2,49 +2,41 @@ package global
 
 import (
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
+
+type RespObj struct {
+	code  int
+	hcode int
+	msg   string
+	meta  map[string]string
+}
 
 // 用户模块
-const (
-	CodeSuccess       = "20000"
-	CodeBadReq        = "40000"
-	CodeUnAuth        = "40003"
-	CodeNoUser        = "40006"
-	CodeAuthError     = "40007"
-	CodeTokenInvalid  = "40008"
-	CodeDaoError      = "50001"
-	CodeInternalError = "50002"
+var (
+	Success       = RespObj{20000, http.StatusOK, "", nil}
+	BadReq        = RespObj{40000, http.StatusBadRequest, "invalid params", nil}
+	UnAuth        = RespObj{40003, http.StatusForbidden, "login please", nil}
+	NoUser        = RespObj{40006, http.StatusBadRequest, "no user found", nil}
+	AuthError     = RespObj{40007, http.StatusBadRequest, "auth error", nil}
+	TokenExpired  = RespObj{40008, http.StatusForbidden, "token invalid", nil}
+	DaoError      = RespObj{50001, http.StatusInternalServerError, "error operating database", nil}
+	InternalError = RespObj{50002, http.StatusInternalServerError, "internal error", nil}
 
-	MsgSuccess       = "success"
-	MsgBadReq        = "invalid params"
-	MsgUnAuth        = "login please"
-	MsgNoUser        = "no user found"
-	MsgAuthError     = "auth error"
-	MsgTokenInvalid  = "token invalid"
-	MsgDaoError      = "error operating database"
-	MsgInternalError = "internal error"
+	NoFileRecv      = RespObj{51000, http.StatusInternalServerError, "can't receive file from req", nil}
+	FileCantOpen    = RespObj{51000, http.StatusInternalServerError, "file cannot open", nil}
+	FileUploadError = RespObj{51000, http.StatusInternalServerError, "file upload failed", nil}
 )
 
-// 文件上传模块
-const (
-	CodeNoFileRecv      = "51000"
-	CodeFileCantOpen    = "51001"
-	CodeFileUploadError = "51002"
-
-	MsgNoFileRecv      = "can't receive file from req"
-	MsgFileCantOpen    = "file cannot open"
-	MsgFileUploadError = "file upload failed"
-)
-
-func Resp(c *gin.Context, code string, msg string, httpCode int, err error) {
+func Resp(c *gin.Context, r RespObj, err error) {
 	var errStack string
 	if err != nil {
-		errStack = msg + ": " + err.Error()
+		errStack = r.msg + ": " + err.Error()
 	} else {
-		errStack = msg
+		errStack = r.msg
 	}
-	c.JSON(httpCode, gin.H{
-		"code": code,
+	c.JSON(r.hcode, gin.H{
+		"code": r.code,
 		"msg":  errStack,
 	})
 }
