@@ -10,16 +10,16 @@ import (
 	"net/http"
 )
 
-// Login 读取user校验 签发token
+// Login 校验user; 签发token; 返回用户信息
 func Login(c *gin.Context) {
 	user := &model.LoginReq{}
 	err := c.ShouldBindJSON(&user)
-	if err != nil {
+	if err != nil || user == nil {
 		global.Resp(c, global.BadReq, err)
 		return
 	}
 	dbUser, err := dao.FindByName(user.UserName)
-	if &dbUser == nil {
+	if dbUser == nil {
 		global.Resp(c, global.NoUser, err)
 		return
 	}
@@ -34,6 +34,14 @@ func Login(c *gin.Context) {
 		"msg":           "success",
 		"access_token":  access,
 		"refresh_token": refresh,
+		// 嵌套结构体 不自动转小写
+		"user": model.LoginVO{
+			Name:   dbUser.Name,
+			Email:  dbUser.Email,
+			Avatar: dbUser.Avatar,
+			Role:   utils.DotString2Arr(dbUser.Role),
+			ID:     dbUser.Model.ID,
+		},
 	})
 }
 

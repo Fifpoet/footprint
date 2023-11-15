@@ -19,8 +19,10 @@ type Article struct {
 }
 
 type User struct {
-	Name     string
-	Email    string
-	Password string
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	Avatar   string `json:"avatar"`
+	Role     string `json:"role"`
 	gorm.Model
 }
