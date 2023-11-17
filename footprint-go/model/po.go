@@ -3,18 +3,14 @@ package model
 import "gorm.io/gorm"
 
 type Article struct {
-	UserId       uint
-	CategoryId   uint
-	Cover        string
-	Title        string
-	Content      string
-	Lat          float64
-	Lng          float64
-	City         string
-	District     string
-	Province     string
-	street       string
-	streetNumber string
+	UserId     uint    `json:"user-id"`
+	CategoryId uint    `json:"category-id"`
+	Cover      string  `json:"cover"`
+	Title      string  `json:"title"`
+	Content    string  `json:"content"`
+	Lat        float64 `json:"lat"`
+	Lng        float64 `json:"lng"`
+	City       string  `json:"city"`
 	gorm.Model
 }
 

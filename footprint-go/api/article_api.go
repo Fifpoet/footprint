@@ -4,13 +4,15 @@ import (
 	"github.com/fifpoet/footprint/dao"
 	"github.com/fifpoet/footprint/global"
 	"github.com/fifpoet/footprint/model"
+	utils "github.com/fifpoet/footprint/util"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"net/http"
+	"time"
 )
 
-func UploadArticle(c *gin.Context) {
-	req := &model.UploadArticleReq{}
+func AddArticle(c *gin.Context) {
+	req := &model.AddArticleReq{}
 	err := c.ShouldBindJSON(&req)
 	if err != nil {
 		global.Resp(c, global.BadReq, err)
@@ -22,15 +24,12 @@ func UploadArticle(c *gin.Context) {
 		CategoryId: 0,
 		Cover:      req.Cover,
 		Title:      req.Title,
-		Content:    req.Detail,
 		Lat:        req.Lat,
 		Lng:        req.Lng,
-		City:       req.Location.City,
-		District:   req.Location.District,
-		Province:   req.Location.Province,
+		City:       req.City,
 		Model:      gorm.Model{},
 	}
-	err = dao.ArticleRepo{}.Update(article)
+	err = dao.ArticleRepo{}.Add(article)
 	if err != nil {
 		global.Resp(c, global.DaoError, nil)
 		return
@@ -39,9 +38,9 @@ func UploadArticle(c *gin.Context) {
 }
 
 func GetArticle(c *gin.Context) {
-	userName, _ := c.Get("userName")
-	user, _ := dao.FindByName(userName.(string))
-	arts, err := dao.ArticleRepo{}.FindById(user.ID)
+	pageNo, _ := utils.String2Int(c.Query("pageNo"))
+	pageSize, _ := utils.String2Int(c.Query("pageSize"))
+	arts, err := dao.ArticleRepo{}.FindByPage(pageNo, pageSize)
 	if err != nil {
 		global.Resp(c, global.DaoError, nil)
 		return
@@ -50,5 +49,49 @@ func GetArticle(c *gin.Context) {
 		"code":     20000,
 		"msg":      "success",
 		"articles": arts,
+	})
+}
+
+func UpdateArticle(c *gin.Context) {
+	req := &model.UpdateArticleReq{}
+	err := c.ShouldBindJSON(&req)
+	if err != nil {
+		global.Resp(c, global.BadReq, err)
+		return
+	}
+	err = dao.ArticleRepo{}.Update(model.Article{
+		UserId:     req.UserId,
+		CategoryId: req.CategoryId,
+		Cover:      req.Cover,
+		Title:      req.Title,
+		Content:    req.Content,
+		Lat:        req.Lat,
+		Lng:        req.Lng,
+		City:       req.City,
+		Model: gorm.Model{
+			ID:        req.ID,
+			UpdatedAt: time.Now(),
+		},
+	})
+	if err != nil {
+		global.Resp(c, global.DaoError, nil)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 20000,
+		"msg":  "success",
+	})
+}
+
+func DelArticleById(c *gin.Context) {
+	id := c.Param("id")
+	err := dao.ArticleRepo{}.DelById(id)
+	if err != nil {
+		global.Resp(c, global.DaoError, nil)
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 20000,
+		"msg":  "success",
 	})
 }

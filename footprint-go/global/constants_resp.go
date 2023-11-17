@@ -14,7 +14,7 @@ type RespObj struct {
 
 // 用户模块
 var (
-	Success       = RespObj{20000, http.StatusOK, "", nil}
+	Success       = RespObj{20000, http.StatusOK, "success", nil}
 	BadReq        = RespObj{40000, http.StatusBadRequest, "invalid params", nil}
 	UnAuth        = RespObj{40003, http.StatusForbidden, "login please", nil}
 	NoUser        = RespObj{40006, http.StatusBadRequest, "no user found", nil}

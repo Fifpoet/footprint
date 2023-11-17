@@ -1,7 +1,5 @@
 package model
 
-import "github.com/fifpoet/footprint/model/internal"
-
 type LoginReq struct {
 	UserName string
 	Password string
@@ -13,11 +11,25 @@ type RegisterReq struct {
 	Email    string
 }
 
-type UploadArticleReq struct {
-	Title    string
-	Detail   string
-	Lat      float64
-	Lng      float64
-	Location internal.Location
-	Cover    string
+type AddArticleReq struct {
+	UserId     uint
+	CategoryId uint
+	Cover      string
+	Title      string
+	Content    string
+	Lat        float64
+	Lng        float64
+	City       string
+}
+
+type UpdateArticleReq struct {
+	ID         uint
+	UserId     uint
+	CategoryId uint
+	Cover      string
+	Title      string
+	Content    string
+	Lat        float64
+	Lng        float64
+	City       string
 }

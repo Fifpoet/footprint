@@ -70,8 +70,13 @@ func InitRoutes(router *gin.Engine) {
 	authority := router.Group("api").Use(middleware.TokenAuthMiddleware())
 	{
 		authority.POST("/refresh", api.Refresh)
-		authority.POST("/article", middleware.Authorize("resource", "write", f), api.UploadArticle)
-		authority.GET("/article", middleware.Authorize("resource", "read", f), api.GetArticle)
+		// CURD文章
+		authority.POST("/post", middleware.Authorize("resource", "write", f), api.AddArticle)
+		authority.GET("/post", middleware.Authorize("resource", "read", f), api.GetArticle)
+		authority.GET("/post/:id", middleware.Authorize("resource", "read", f), api.GetArticle)
+		authority.PUT("/post", middleware.Authorize("resource", "write", f), api.UpdateArticle)
+		authority.DELETE("/post/:id", middleware.Authorize("resource", "write", f), api.DelArticleById)
+
 		authority.POST("/upload", middleware.Authorize("resource", "write", f), api.UploadFile)
 	}
 
